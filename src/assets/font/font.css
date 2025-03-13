@@ -1,0 +1,63 @@
+/* Подключение шрифтов Commissioner */
+@font-face {
+	font-family: "Commissioner";
+	src: url("./assets/font/Commissioner-Thin.ttf") format("truetype");
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Commissioner";
+	src: url("./assets/font/Commissioner-ExtraLight.ttf") format("truetype");
+	font-weight: 200;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Commissioner";
+	src: url("./assets/font/Commissioner-Light.ttf") format("truetype");
+	font-weight: 300;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Commissioner";
+	src: url("./assets/font/Commissioner-Regular.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Commissioner";
+	src: url("./assets/font/Commissioner-Medium.ttf") format("truetype");
+	font-weight: 500;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Commissioner";
+	src: url("./assets/font/Commissioner-SemiBold.ttf") format("truetype");
+	font-weight: 600;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Commissioner";
+	src: url("./assets/font/Commissioner-Bold.ttf") format("truetype");
+	font-weight: 700;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Commissioner";
+	src: url("./assets/font/Commissioner-ExtraBold.ttf") format("truetype");
+	font-weight: 800;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Commissioner";
+	src: url("./assets/font/Commissioner-Black.ttf") format("truetype");
+	font-weight: 900;
+	font-style: normal;
+}

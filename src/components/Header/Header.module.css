@@ -1,0 +1,18 @@
+.header {
+	background-color: white;
+}
+
+.header > div {
+	display: flex;
+	justify-content: space-between;
+}
+
+.left {
+	display: flex;
+	align-items: center;
+}
+
+.left p {
+	font-weight: 400;
+	font-size: clamp(18px, 2vw, 32px);
+}
