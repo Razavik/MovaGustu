@@ -2,7 +2,6 @@ import styles from "./CoffeeCard.module.css";
 
 interface CoffeeCardProps {
 	image: string;
-	label?: string; // Опциональная метка для отображения над карточкой
 }
 
 const CoffeeCard = ({ image }: CoffeeCardProps) => {
