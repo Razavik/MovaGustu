@@ -11,9 +11,7 @@ interface SortableLabelProps {
 const SortableLabel = ({ id, label, containerId }: SortableLabelProps) => {
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
 		id,
-		data: {
-			containerId,
-		},
+		data: { containerId },
 	});
 
 	const style = {
@@ -30,7 +28,30 @@ const SortableLabel = ({ id, label, containerId }: SortableLabelProps) => {
 			{...listeners}
 			data-container-id={containerId}
 		>
-			{label}
+			<svg
+				width="296"
+				height="66"
+				viewBox="0 0 296 66"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg"
+				style={{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					width: "100%",
+					height: "100%",
+					filter: "drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2))",
+					pointerEvents: "none",
+				}}
+			>
+				<path
+					fillRule="evenodd"
+					clipRule="evenodd"
+					d="M0.86438 13.5107V53.3902L12.5862 65.148H94.0878H109.683H283.419L295.14 53.3902V13.5107L281.994 0.323486H109.683H94.0878H14.0112L0.86438 13.5107Z"
+					fill="white"
+				/>
+			</svg>
+			<span className={styles.labelText}>{label}</span>
 		</div>
 	);
 };

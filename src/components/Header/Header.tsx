@@ -1,5 +1,5 @@
-import logo from "@assets/img/logo.png";
-import logoShop from "@assets/img/logo-shop.png";
+import logo from "@assets/img/logos/logo.png";
+import logoShop from "@assets/img/logos/logo-shop.png";
 import styles from "./Header.module.css";
 
 const Header = () => {

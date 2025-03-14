@@ -1,0 +1,132 @@
+.endLevel {
+	max-width: 1345px;
+	margin: 0 auto;
+	margin-top: 60px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.endLevel h2 {
+	max-width: 1345px;
+	text-align: center;
+	font-size: clamp(24px, 2vw, 40px);
+	font-weight: 400;
+}
+
+.promos {
+	margin-top: 60px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 80px;
+}
+
+.promoCard {
+	background-color: white;
+	padding: 37px 30px;
+	height: 378px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	clip-path: polygon(
+		40px 0,
+		calc(100% - 40px) 0,
+		100% 40px,
+		100% calc(100% - 40px),
+		calc(100% - 40px) 100%,
+		40px 100%,
+		0 calc(100% - 40px),
+		0 40px
+	);
+}
+
+.promoCardCoffee {
+	max-width: 680px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16px;
+}
+
+.subTitle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+}
+
+.subTitle h3 {
+	font-size: 32px;
+	line-height: 39px;
+	font-weight: 500;
+	text-align: right;
+	max-width: 295px;
+}
+
+.promoShopTitle {
+	max-width: 297px !important;
+}
+
+.divider {
+	height: 78px;
+	min-width: 3px;
+	background-color: var(--grey);
+}
+
+.promo {
+	font-size: 24px;
+	font-weight: 500;
+	text-align: center;
+}
+
+.info {
+	display: flex;
+	gap: 14px;
+	align-items: center;
+}
+
+.info p {
+	text-align: right;
+	font-size: 11px;
+}
+
+.dividerInfo {
+	height: 54px;
+	min-width: 2px;
+	background-color: var(--grey);
+}
+
+.promoCardShop {
+	max-width: 563px;
+	width: 100%;
+	gap: 32px;
+}
+
+.infoShop {
+	text-align: center;
+	font-size: 16px;
+}
+
+.nextLevel {
+	width: 659px;
+	height: 80px;
+	position: relative;
+	border: none;
+	background: none;
+	margin-top: 60px;
+	cursor: pointer;
+}
+
+.nextLevel span {
+	font-size: 40px;
+	line-height: 64px;
+	font-weight: 500;
+	position: relative;
+	color: var(--bordo);
+}
+
+.nextLevel:hover span {
+	font-weight: 600;
+}

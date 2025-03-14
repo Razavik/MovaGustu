@@ -67,29 +67,25 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	gap: 12px;
 	max-width: 360px;
 	width: 100%;
 }
 
 .labelContainer {
+	position: relative;
 	width: 296px;
 	height: 65px;
-	margin-bottom: 10px;
-	border-radius: 20px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	z-index: 1;
 }
 
 .droppable {
 	cursor: pointer;
-	border: 1px dashed rgba(0, 0, 0, 0.2);
 	transition: all 0.3s ease;
 	background-color: transparent;
 }
 
 .droppable:hover {
-	background-color: rgba(255, 255, 255, 0.1);
 	border-color: rgba(0, 0, 0, 0.3);
 }
 
@@ -102,20 +98,34 @@
 }
 
 .checkButton {
-	padding: 10px 30px;
-	background-color: #e63946;
-	color: white;
-	font-size: 16px;
-	font-weight: bold;
+	width: 299px;
+	height: 80px;
+	position: relative;
+
+	background: none;
 	border: none;
-	border-radius: 20px;
 	cursor: pointer;
-	transition: background-color 0.3s;
-	margin-top: 20px;
+	margin-top: 32px;
 }
 
-.checkButton:hover {
-	background-color: #c1121f;
+.buttonText {
+	position: relative;
+	font-size: 40px;
+	line-height: 64px;
+	font-weight: 500;
+	color: var(--bordo);
+}
+
+.checkButton:hover .buttonText {
+	font-weight: 600;
+}
+
+.description {
+	max-width: 1239px;
+	color: white;
+	margin: 0 auto;
+	text-align: center;
+	margin-top: 27px;
 }
 
 /* Стили для модального окна */
@@ -134,49 +144,58 @@
 
 .modalContent {
 	position: relative;
-	background-color: white;
-	padding: 30px;
-	border-radius: 20px;
-	max-width: 500px;
-	width: 90%;
-	text-align: center;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+	max-width: 875px;
+	height: 455px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }
 
 .closeButton {
 	position: absolute;
-	top: 10px;
-	right: 15px;
+	top: 43px;
+	right: 66px;
 	background: none;
 	border: none;
-	font-size: 24px;
 	cursor: pointer;
 	color: #999;
 }
 
-.modalTitle {
-	font-size: 20px;
-	margin-bottom: 15px;
-	font-weight: 500;
+.closeButton img {
+	width: 32px;
+	height: 32px;
 }
 
-.modalText {
-	margin-bottom: 20px;
-	color: #666;
+.modalTitle {
+	position: relative;
+	font-size: 20px;
+	margin-bottom: 15px;
+	font-weight: 400;
+	max-width: 399px;
+	font-size: 37px;
+	margin: 0 auto;
+	margin-bottom: 41px;
+	text-align: center;
 }
 
 .bonusButton {
-	background-color: #e63946;
-	color: white;
-	padding: 12px 24px;
+	position: relative;
 	border: none;
-	border-radius: 30px;
-	font-size: 16px;
-	font-weight: 500;
+	background: none;
 	cursor: pointer;
-	transition: background-color 0.3s;
+	width: 765px;
+	height: 93px;
 }
 
-.bonusButton:hover {
-	background-color: #c1121f;
+.bonusButton span {
+	position: relative;
+	color: var(--bordo);
+	font-size: 46px;
+	line-height: 74px;
+}
+
+.bonusButton:hover span {
+	font-weight: 500;
 }

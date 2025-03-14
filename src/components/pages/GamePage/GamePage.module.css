@@ -1,0 +1,45 @@
+.gamePage {
+	position: relative;
+}
+
+.firstBeans {
+	position: absolute;
+	top: 22px;
+	left: 22px;
+	animation: floatFirstBeans 3s ease-in-out infinite;
+	width: 212px;
+	height: 212px;
+	z-index: -1;
+}
+
+.secondBeans {
+	position: absolute;
+	right: 27px;
+	bottom: 155px;
+	animation: floatSecondBeans 4s ease-in-out infinite;
+	z-index: -2;
+}
+
+@keyframes floatFirstBeans {
+	0% {
+		transform: translate(0, 0) rotate(77deg);
+	}
+	50% {
+		transform: translate(0, -10px) rotate(80deg);
+	}
+	100% {
+		transform: translate(0, 0) rotate(77deg);
+	}
+}
+
+@keyframes floatSecondBeans {
+	0% {
+		transform: translate(0, 0) rotate(0deg);
+	}
+	50% {
+		transform: translate(0, -15px) rotate(-4deg);
+	}
+	100% {
+		transform: translate(0, 0) rotate(0deg);
+	}
+}

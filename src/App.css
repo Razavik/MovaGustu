@@ -1,5 +1,10 @@
 @import url("./assets/font/font.css");
 
+#root {
+	--grey: #312c2d;
+	--bordo: #93191c;
+}
+
 html {
 	box-sizing: border-box;
 }
@@ -16,7 +21,7 @@ body {
 	min-height: 100vh;
 	font-family: "Commissioner", sans-serif;
 	background-color: #e2aedd;
-	color: #312c2d;
+	color: var(--grey);
 }
 
 a {

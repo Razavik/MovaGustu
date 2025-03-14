@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, FC, useEffect } from "react";
 import {
 	DndContext,
-	rectIntersection,
+	pointerWithin,
 	DragEndEvent,
 	DragStartEvent,
 	DragOverlay,
@@ -17,60 +17,18 @@ import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import CoffeeCard from "./CoffeeCard/CoffeeCard";
 import SortableLabel from "@components/SortableLabel/SortableLabel";
 import styles from "./game.module.css";
+import { Data, InitialLabels } from "@components/pages/GamePage/types/types";
+import closeButton from "@assets/img/close-button.svg";
 
-// Импортируем изображения
-import img1 from "@assets/img/level-1/картинка 1.png";
-import img2 from "@assets/img/level-1/картинка 2.png";
-import img3 from "@assets/img/level-1/картинка 3.png";
-import img4 from "@assets/img/level-1/картинка 4.png";
-
-// Данные о карточках кофе
-const coffeeData = [
-	{
-		id: "light",
-		type: "Светлая",
-		image: img1,
-	},
-	{
-		id: "medium",
-		type: "Сярэдняя",
-		image: img2,
-	},
-	{
-		id: "green",
-		type: "Зялёнае зерне",
-		image: img3,
-	},
-	{
-		id: "whole",
-		type: "Цёмная",
-		image: img4,
-	},
-];
-
-// Данные о плашках с названиями
-const initialLabels = [
-	{
-		id: "label-light",
-		type: "Светлая",
-		targetId: "light",
-	},
-	{
-		id: "label-medium",
-		type: "Сярэдняя",
-		targetId: "medium",
-	},
-	{
-		id: "label-green",
-		type: "Зялёнае зерне",
-		targetId: "green",
-	},
-	{
-		id: "label-whole",
-		type: "Цёмная",
-		targetId: "whole",
-	},
-];
+// Функция для перемешивания массива (алгоритм Фишера-Йейтса)
+const shuffleArray = <T extends unknown>(array: T[]): T[] => {
+	const shuffled = [...array];
+	for (let i = shuffled.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+	}
+	return shuffled;
+};
 
 // Типы для контейнеров
 interface TargetContainer {
@@ -96,6 +54,7 @@ const DroppableContainer = ({
 	children: React.ReactNode;
 	isDroppable: boolean;
 }) => {
+	// Используем хук из dnd-kit для создания контейнера, в который можно что-то перетаскивать
 	const { setNodeRef } = useDroppable({
 		id,
 		disabled: !isDroppable,
@@ -108,18 +67,52 @@ const DroppableContainer = ({
 			data-id={id}
 			className={`${styles.labelContainer} ${isDroppable ? styles.droppable : ""}`}
 		>
+			<svg
+				width="296"
+				height="66"
+				viewBox="0 0 296 66"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg"
+				style={{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					width: "100%",
+					height: "100%",
+					filter: "drop-shadow(0 4px 2px rgba(0, 0, 0, 0.6))",
+					pointerEvents: "none",
+				}}
+			>
+				<path
+					d="M12.7937 64.648L1.36438 53.1836V13.7174L14.2188 0.823486H281.786L294.64 13.7174V53.1835L283.211 64.648H12.7937Z"
+					stroke="white"
+				/>
+			</svg>
 			{children}
 		</div>
 	);
 };
 
-const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
+interface Game {
+	currentData: {
+		data: Data[];
+		initialLabels: InitialLabels[];
+	};
+	setWin: (value: boolean) => void;
+}
+
+const Game: FC<Game> = ({ currentData, setWin }) => {
+	const { data, initialLabels } = currentData;
+
+	// Перемешиваем плашки при каждом рендере компонента
+	const [shuffledLabels, setShuffledLabels] = useState(() => shuffleArray([...initialLabels]));
+
 	// Состояние для перемещенных плашек (вышедших из исходного контейнера)
 	const [movedLabels, setMovedLabels] = useState<string[]>([]);
 
 	// Состояние для отслеживания позиций плашек в исходном контейнере
-	const [labelPositions, setLabelPositions] = useState<Record<string, number>>(
-		initialLabels.reduce((acc, label, index) => {
+	const [labelPositions, setLabelPositions] = useState<Record<string, number>>(() =>
+		shuffledLabels.reduce((acc, label, index) => {
 			acc[label.id] = index;
 			return acc;
 		}, {} as Record<string, number>)
@@ -136,12 +129,35 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 	const [isChecked, setIsChecked] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 
+	// Сбрасываем состояния при изменении уровня
+	useEffect(() => {
+		const newShuffledLabels = shuffleArray([...initialLabels]);
+		setShuffledLabels(newShuffledLabels);
+
+		setMovedLabels([]);
+
+		setLabelPositions(
+			newShuffledLabels.reduce((acc, label, index) => {
+				acc[label.id] = index;
+				return acc;
+			}, {} as Record<string, number>)
+		);
+
+		setTargetContainers(initialTargetContainers);
+
+		setIsChecked(false);
+		setShowModal(false);
+
+		setActiveId(null);
+		setActiveLabel(null);
+	}, [currentData, initialLabels]);
+
 	// Обработчик начала перетаскивания
 	const handleDragStart = (event: DragStartEvent) => {
 		setActiveId(event.active.id as string);
 		const draggedLabel =
-			initialLabels.find((label) => label.id === event.active.id) ||
-			initialLabels.find((label) => label.id === event.active.id);
+			shuffledLabels.find((label) => label.id === event.active.id) ||
+			shuffledLabels.find((label) => label.id === event.active.id);
 		setActiveLabel(draggedLabel);
 	};
 
@@ -158,7 +174,7 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 
 		// Перетаскивание из исходного контейнера в целевой
 		if (
-			initialLabels.some((label) => label.id === activeId) &&
+			shuffledLabels.some((label) => label.id === activeId) &&
 			!movedLabels.includes(activeId)
 		) {
 			// Проверяем, является ли цель контейнером
@@ -257,13 +273,24 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 		}
 	};
 
-	// Настраиваем сенсоры
+	// Инициализируем сенсоры для перетаскивания
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
-			activationConstraint: { distance: 1 },
+			activationConstraint: {
+				distance: 1,
+			},
 		}),
-		useSensor(TouchSensor),
-		useSensor(MouseSensor),
+		useSensor(TouchSensor, {
+			activationConstraint: {
+				delay: 100,
+				tolerance: 1,
+			},
+		}),
+		useSensor(MouseSensor, {
+			activationConstraint: {
+				distance: 1,
+			},
+		}),
 		useSensor(KeyboardSensor)
 	);
 
@@ -285,8 +312,8 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 			const labelId = container.labelId;
 
 			if (labelId) {
-				const label = initialLabels.find((l) => l.id === labelId);
-				const coffee = coffeeData[index];
+				const label = shuffledLabels.find((l) => l.id === labelId);
+				const coffee = data[index];
 
 				if (label) {
 					const isCorrect = label.targetId === coffee.id;
@@ -302,7 +329,7 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 		setIsChecked(true);
 
 		// Если все ответы правильные
-		if (correctCount === coffeeData.length) {
+		if (correctCount === data.length) {
 			setWin(true);
 		} else {
 			setShowModal(true);
@@ -312,6 +339,7 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 	// Обработка закрытия модального окна
 	const handleCloseModal = () => {
 		setShowModal(false);
+		setIsChecked(false);
 	};
 
 	// Получаем плашку для контейнера
@@ -320,7 +348,7 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 		const labelId = targetContainers[containerIndex].labelId;
 
 		if (labelId) {
-			return initialLabels.find((label) => label.id === labelId);
+			return shuffledLabels.find((label) => label.id === labelId);
 		}
 
 		return null;
@@ -334,7 +362,7 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 				</h2>
 
 				<DndContext
-					collisionDetection={rectIntersection}
+					collisionDetection={pointerWithin}
 					onDragStart={handleDragStart}
 					onDragEnd={handleDragEnd}
 					sensors={sensors}
@@ -344,7 +372,7 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 						{/* Исходный контейнер с плашками вверху */}
 						<div className={styles.sourceContainer}>
 							{/* Создаем массив со слотами для плашек */}
-							{Array.from({ length: initialLabels.length }).map((_, slotIndex) => {
+							{Array.from({ length: shuffledLabels.length }).map((_, slotIndex) => {
 								// Находим ID плашки, которая должна быть в этом слоте
 								const labelId = Object.entries(labelPositions).find(
 									([id, position]) =>
@@ -353,7 +381,7 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 
 								// Находим информацию о плашке по ID
 								const label = labelId
-									? initialLabels.find((l) => l.id === labelId)
+									? shuffledLabels.find((l) => l.id === labelId)
 									: null;
 
 								return (
@@ -378,7 +406,7 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 
 						{/* Контейнер с карточками кофе */}
 						<div className={styles.coffeeCardsContainer}>
-							{coffeeData.map((coffee, index) => {
+							{data.map((coffee, index) => {
 								const containerId = `container-${index}`;
 								const label = getLabelForContainer(containerId);
 
@@ -389,7 +417,7 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 											isDroppable={!isChecked}
 										>
 											{/* Показываем метку, если она есть в этом контейнере */}
-											{!isChecked && label && (
+											{label && activeId !== label.id && (
 												<SortableContext
 													items={[label.id]}
 													strategy={rectSortingStrategy}
@@ -424,22 +452,98 @@ const Game = ({ setWin }: { setWin: (win: boolean) => void }) => {
 				</DndContext>
 
 				<button className={styles.checkButton} onClick={checkAnswers}>
-					Праверыць
+					<svg
+						width="296"
+						height="66"
+						viewBox="0 0 296 66"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+						style={{
+							position: "absolute",
+							top: 0,
+							left: 0,
+							width: "100%",
+							height: "100%",
+							filter: "drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2))",
+							pointerEvents: "none",
+						}}
+					>
+						<path
+							fill-rule="evenodd"
+							clip-rule="evenodd"
+							d="M0 18.8832V53.3902L12.5862 65.148H94.0878H109.683H283.419L295.14 53.3902V18.8832L281.994 0.323486H109.683H94.0878H14.0112L0 18.8832Z"
+							fill="white"
+						/>
+					</svg>
+					<span className={styles.buttonText}>Праверыць</span>
 				</button>
 
+				<p className={styles.description}>
+					Суаднясіце правільныя сцверджанні з адпаведнымі малюнкамі. Для гэтага
+					перамясціце "воблачка", утрымліваючы правую кнопку мышы (на камп'ютары) ці
+					заціскаючы пальцам (на экране тэлефона). Як зробіце выбар, зафіксуйце камбінацыю
+					кнопкай "Праверыць".
+				</p>
 				{/* Модальное окно с ошибкой */}
 				{showModal && (
 					<div className={styles.modalOverlay}>
 						<div className={styles.modalContent}>
+							<svg
+								width="874"
+								height="455"
+								viewBox="0 0 874 455"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								style={{
+									position: "absolute",
+									top: 0,
+									left: 0,
+									width: "100%",
+									height: "100%",
+									filter: "drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2))",
+									pointerEvents: "none",
+								}}
+							>
+								<path
+									fill-rule="evenodd"
+									clip-rule="evenodd"
+									d="M0 48.9774V405.817L48.8726 454.84H479.206H560.427H823.681L873.71 404.657V48.9774L824.882 0H560.427H479.206H48.8275L0 48.9774Z"
+									fill="white"
+								/>
+							</svg>
 							<button className={styles.closeButton} onClick={handleCloseModal}>
-								×
+								<img src={closeButton} alt="Close" />
 							</button>
 							<h3 className={styles.modalTitle}>
 								Нешта пайшло не так, паспрабуйце выканаць заданне зноў!
+								<br />У вас усё атрымаецца!
 							</h3>
-							<p className={styles.modalText}>У вас усё атрымаецца!</p>
 							<button className={styles.bonusButton} onClick={handleCloseModal}>
-								Ці забраць ужо атрыманы бонус
+								<svg
+									width="765"
+									height="93"
+									viewBox="0 0 765 93"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+									style={{
+										position: "absolute",
+										top: 0,
+										left: 0,
+										width: "100%",
+										height: "100%",
+										filter: "drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2))",
+										pointerEvents: "none",
+									}}
+								>
+									<path
+										fill-rule="evenodd"
+										clip-rule="evenodd"
+										d="M0 18.8832V75.9878L16.7851 92.8244H747.945L764.73 75.9878V18.8832L745.905 0H18.8254L0 18.8832Z"
+										fill="white"
+									/>
+								</svg>
+
+								<span>Ці забраць ужо атрыманы бонус</span>
 							</button>
 						</div>
 					</div>
