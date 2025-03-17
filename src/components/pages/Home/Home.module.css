@@ -1,6 +1,7 @@
 .homeContainer {
 	position: relative;
 	overflow: hidden;
+	padding-bottom: 37px;
 }
 
 .title {
@@ -55,7 +56,7 @@
 }
 
 .button:hover span {
-	font-weight: 600;
+	/* font-weight: 600; */
 }
 
 .firstBlock {
@@ -135,5 +136,15 @@
 	}
 	100% {
 		transform: translate(0, 0) rotate(0deg);
+	}
+}
+
+@media screen and (max-width: 1785px) {
+	.textContainer {
+		margin-right: 100px;
+	}
+
+	.firstBlock {
+		left: -90px;
 	}
 }

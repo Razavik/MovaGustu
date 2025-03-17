@@ -10,17 +10,17 @@ const data: Data[] = [
     {
         id: "latte",
         type: "Латэ",
-        image: img2,
+        image: img1,
     },
     {
         id: "flatwhite",
         type: "Флэт Уайт",
-        image: img3,
+        image: img2,
     },
     {
         id: "cappuccino",
         type: "Капучына",
-        image: img1,
+        image: img3,
     },
     {
         id: "macchiato",

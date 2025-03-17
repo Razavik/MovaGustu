@@ -10,22 +10,22 @@ const data: Data[] = [
     {
         id: "thin",
         type: "Тонкі",
-        image: img2,
+        image: img1,
     },
     {
         id: "large",
         type: "Буйны",
-        image: img4,
+        image: img2,
     },
     {
         id: "ultrathin",
         type: "Ультратонкі",
-        image: img1,
+        image: img3,
     },
     {
         id: "normal",
         type: "Сярэдні",
-        image: img3,
+        image: img4,
     },
 ];
 

@@ -117,7 +117,7 @@
 }
 
 .checkButton:hover .buttonText {
-	font-weight: 600;
+	/* font-weight: 600; */
 }
 
 .description {
@@ -197,5 +197,5 @@
 }
 
 .bonusButton:hover span {
-	font-weight: 500;
+	/* font-weight: 500; */
 }
