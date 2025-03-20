@@ -17,7 +17,7 @@ const Home = () => {
 				</p>
 				<button
 					onClick={() => {
-						navigate("/game");
+						navigate("/coffee-quiz/game");
 					}}
 					className={styles.button}
 				>

@@ -6,9 +6,9 @@ import Main from "@components/Main/Main";
 const AppRoutes = () => {
 	return (
 		<Routes>
-			<Route path="/" element={<Main />}>
+			<Route path="/coffee-quiz" element={<Main />}>
 				<Route index element={<Home />} />
-				<Route path="/game" element={<GamePage />} />
+				<Route path="/coffee-quiz/game" element={<GamePage />} />
 			</Route>
 		</Routes>
 	);
