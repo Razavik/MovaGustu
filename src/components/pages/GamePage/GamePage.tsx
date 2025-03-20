@@ -23,7 +23,7 @@ const GamePage = () => {
 	return (
 		<section className={styles.gamePage}>
 			{!win && currentStage <= 4 ? (
-				<Game currentData={allData[currentStage - 1]} setWin={setWin} />
+				<Game currentStage={currentStage} currentData={allData[currentStage - 1]} setWin={setWin} />
 			) : (
 				<EndLevel stage={currentStage} setStage={setCurrentStage} setWin={setWin} />
 			)}

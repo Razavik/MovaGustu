@@ -1,4 +1,4 @@
-import { useState, FC, useEffect } from "react";
+import {useState, FC, useEffect, ReactNode} from "react";
 import {
 	DndContext,
 	pointerWithin,
@@ -98,10 +98,18 @@ interface Game {
 		data: Data[];
 		initialLabels: InitialLabels[];
 	};
+	currentStage: number,
 	setWin: (value: boolean) => void;
 }
 
-const Game: FC<Game> = ({ currentData, setWin }) => {
+const titlesByStage: { [key: number]: ReactNode } = {
+	1: <>Суаднясіце <b>ступень абсмажвання кавы</b> з малюнкамі і атрымайце бонусы</>,
+	2: <>Суаднясіце <b>ступень памолу</b> з малюнкамі і атрымайце бонусы</>,
+	3: <>Суаднясіце <b>кававыя напоі</b> з малюнкамі і атрымайце бонусы</>,
+	4: <>Суаднясіце <b>кававыя аксесуары</b> з іх малюнкамі і атрымайце бонусы</>
+}
+
+const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 	const { data, initialLabels } = currentData;
 
 	// Перемешиваем плашки при каждом рендере компонента
@@ -358,7 +366,7 @@ const Game: FC<Game> = ({ currentData, setWin }) => {
 		<div className={styles.gameContainer}>
 			<div className={styles.gameContent}>
 				<h2 className={styles.title}>
-					Суаднясіце <b>ступень абсмажвання кавы</b> з малюнкамі і атрымайце бонусы
+					{ titlesByStage[currentStage] ?? <></> }
 				</h2>
 
 				<DndContext
