@@ -3,6 +3,9 @@
 #root {
 	--grey: #312c2d;
 	--bordo: #93191c;
+	font-family: "Commissioner", sans-serif;
+	background-color: #e2aedd;
+	color: var(--grey);
 }
 
 html {
@@ -15,13 +18,6 @@ html {
 	box-sizing: inherit;
 	padding: 0;
 	margin: 0;
-}
-
-body {
-	min-height: 100vh;
-	font-family: "Commissioner", sans-serif;
-	background-color: #e2aedd;
-	color: var(--grey);
 }
 
 a {
