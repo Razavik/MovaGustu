@@ -4,7 +4,7 @@
 	padding-bottom: 37px;
 }
 
-.title {
+h1.title {
 	font-size: 80px;
 	line-height: 64px;
 	color: white;
@@ -63,7 +63,7 @@
 	position: absolute;
 	top: 235px;
 	left: 51px;
-	z-index: -2;
+	z-index: 0;
 }
 
 .odo {
@@ -78,7 +78,7 @@
 	top: 538px;
 	left: 13px;
 	animation: floatFirstBeans 3s ease-in-out infinite;
-	z-index: -1;
+	z-index: 0;
 	width: 292px;
 	height: 292px;
 }
@@ -88,7 +88,7 @@
 	top: 126px;
 	right: 10px;
 	animation: floatSecondBeans 4s ease-in-out infinite;
-	z-index: -1;
+	z-index: 0;
 	width: 195px;
 	height: 195px;
 }
@@ -98,7 +98,7 @@
 	right: 0;
 	bottom: 110px;
 	animation: floatThirdBeans 4s ease-in-out infinite;
-	z-index: -1;
+	z-index: 0;
 	width: 354px;
 	height: 354px;
 }

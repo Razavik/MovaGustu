@@ -3,13 +3,14 @@
 #root {
 	--grey: #312c2d;
 	--bordo: #93191c;
-	font-family: "Commissioner", sans-serif;
 	background-color: #e2aedd;
 	color: var(--grey);
-}
-
-html {
 	box-sizing: border-box;
+	font-family: "Commissioner", sans-serif;
+	font-size: initial;
+	font-weight: initial;
+	font-style: initial;
+	line-height: initial;
 }
 
 *,

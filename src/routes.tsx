@@ -1,14 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "@components/pages/Home/Home";
-import GamePage from "@components/pages/GamePage/GamePage";
 import Main from "@components/Main/Main";
+import MainPage from "@components/pages/MainPage/MainPage.tsx";
 
 const AppRoutes = () => {
 	return (
 		<Routes>
 			<Route path="/coffee-quiz" element={<Main />}>
-				<Route index element={<Home />} />
-				<Route path="/coffee-quiz/game" element={<GamePage />} />
+				<Route index element={<MainPage />} />
 			</Route>
 		</Routes>
 	);

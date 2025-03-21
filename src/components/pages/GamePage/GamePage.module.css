@@ -10,7 +10,7 @@
 	animation: floatFirstBeans 3s ease-in-out infinite;
 	width: 212px;
 	height: 212px;
-	z-index: -1;
+	z-index: 0;
 }
 
 .secondBeans {
@@ -18,7 +18,7 @@
 	right: 27px;
 	bottom: 155px;
 	animation: floatSecondBeans 4s ease-in-out infinite;
-	z-index: -2;
+	z-index: 0;
 }
 
 @keyframes floatFirstBeans {

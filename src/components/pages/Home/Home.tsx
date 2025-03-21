@@ -1,10 +1,13 @@
-import { useNavigate } from "react-router-dom";
 import styles from "./Home.module.css";
 import firstBlock from "@assets/img/first-block-img.png";
 import beans from "@assets/img/beans.png";
+import {Dispatch, SetStateAction} from "react";
 
-const Home = () => {
-	const navigate = useNavigate();
+interface HomeProps {
+	setIsGame: Dispatch<SetStateAction<boolean>>;
+}
+
+const Home = ({ setIsGame }: HomeProps) => {
 	return (
 		<div className={styles.homeContainer}>
 			<h1 className={styles.title}>Выбiрай ЦІКАВУЮ вясну!</h1>
@@ -17,7 +20,7 @@ const Home = () => {
 				</p>
 				<button
 					onClick={() => {
-						navigate("/coffee-quiz/game");
+						setIsGame(true)
 					}}
 					className={styles.button}
 				>

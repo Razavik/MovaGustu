@@ -5,6 +5,8 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	position: relative;
+	z-index: 1;
 }
 
 .endLevel h2 {
@@ -79,6 +81,7 @@
 	font-size: 24px;
 	font-weight: 500;
 	text-align: center;
+	margin: 0;
 }
 
 .info {
@@ -90,6 +93,7 @@
 .info p {
 	text-align: right;
 	font-size: 11px;
+	margin: 0;
 }
 
 .dividerInfo {
@@ -107,6 +111,7 @@
 .infoShop {
 	text-align: center;
 	font-size: 16px;
+	margin: 0;
 }
 
 .nextLevel {
