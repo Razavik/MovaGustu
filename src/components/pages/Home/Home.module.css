@@ -11,12 +11,13 @@ h1.title {
 	text-align: center;
 	margin-top: 88px;
 	text-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+	padding: 0 20px;
 }
 
 .textContainer {
 	margin-left: auto;
 	margin-right: 228px;
-	max-width: 715px;
+	max-width: clamp(586px, 40vw, 715px);
 	color: white;
 	display: flex;
 	flex-direction: column;
@@ -67,10 +68,11 @@ h1.title {
 }
 
 .odo {
-	margin-top: 137px;
+	margin-top: 150px;
 	color: white;
 	text-align: center;
 	font-size: 15px;
+	padding: 0 40px;
 }
 
 .firstBeans {
@@ -139,12 +141,147 @@ h1.title {
 	}
 }
 
-@media screen and (max-width: 1785px) {
+@media (max-width: 1650px) {
 	.textContainer {
-		margin-right: 100px;
+		margin-right: 80px;
+	}
+}
+
+@media (max-width: 1440px) {
+	.firstBeans {
+		width: 225px;
+		height: 225px;
+	}
+
+	.secondBeans,
+	.thirdBeans {
+		display: none;
 	}
 
 	.firstBlock {
-		left: -90px;
+		width: clamp(589px, 50vw, 697px);
+		height: clamp(467px, 40vw, 552px);
+	}
+}
+
+@media (max-width: 1280px) {
+	.firstBlock {
+		left: clamp(0px, 1vw, 51px);
+	}
+	.textContainer {
+		max-width: clamp(456px, 45vw, 586px);
+		margin-right: clamp(54px, 5vw, 73px);
+	}
+}
+
+@media (max-width: 1080px) {
+	.textContainer {
+		margin-top: 70px;
+	}
+}
+
+@media (max-width: 1024px) {
+	.firstBlock {
+		width: 515px;
+		height: 442px;
+		top: 284px;
+		left: -7px;
+	}
+
+	.subTitle {
+		font-size: 50px;
+	}
+
+	.text {
+		font-size: 35px;
+	}
+}
+
+@media (max-width: 768px) {
+	h1.title {
+		font-size: clamp(37px, 10vw, 80px);
+		line-height: clamp(37px, 10vw, 80px);
+		max-width: min-content;
+	}
+
+	.firstBlock {
+		position: initial;
+		margin-top: 27px;
+		width: clamp(312px, 70vw, 515px);
+		height: clamp(247px, 55vw, 442px);
+	}
+
+	.homeContainer {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.textContainer {
+		margin: 0 auto;
+		margin-top: 18px;
+		gap: clamp(21px, 5vw, 44px);
+	}
+
+	.subTitle {
+		font-size: clamp(24px, 5vw, 50px);
+		line-height: clamp(28px, 5vw, 50px);
+	}
+
+	.text {
+		font-size: clamp(18px, 5vw, 35px);
+		line-height: clamp(20px, 5vw, 40px);
+	}
+
+	.button {
+		margin: 0 auto;
+		width: clamp(136px, 40vw, 222px);
+	}
+
+	.button span {
+		font-size: clamp(18px, 6vw, 35px);
+		line-height: clamp(20px, 6vw, 40px);
+	}
+
+	.firstBeans {
+		width: clamp(100px, 25vw, 225px);
+		height: clamp(100px, 25vw, 225px);
+		left: -20px;
+		top: 396px;
+	}
+
+	.secondBeans {
+		width: clamp(100px, 25vw, 225px);
+		height: clamp(100px, 25vw, 225px);
+		display: block;
+		right: -17px;
+		top: 147px;
+	}
+}
+
+@media (max-width: 480px) {
+	.odo {
+		display: none;
+	}
+
+	.textContainer {
+		max-width: 287px;
+	}
+
+	h1.title {
+		margin-top: 31px;
+		font-size: 37px;
+		line-height: 37px;
+	}
+
+	.subTitle {
+		font-size: 24px;
+		line-height: 29px;
+	}
+
+	.text {
+		font-size: 18px;
+		line-height: 20px;
 	}
 }

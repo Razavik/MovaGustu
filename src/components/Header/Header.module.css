@@ -12,7 +12,32 @@
 	align-items: center;
 }
 
+.logo {
+	width: clamp(154px, 30vw, 320px);
+	height: clamp(77px, 15vw, 160px);
+}
+
+.logoShop {
+	width: clamp(127px, 25vw, 283px);
+	height: clamp(77px, 15vw, 160px);
+}
+
 .left p {
 	font-weight: 400;
-	font-size: clamp(18px, 2vw, 32px);
+	font-size: clamp(16px, 3vw, 32px);
+}
+
+@media (max-width: 768px) {
+	.logoShop {
+		display: none;
+	}
+
+	.left {
+		width: 100%;
+		justify-content: space-between;
+	}
+
+	.left p {
+		margin-right: 31px;
+	}
 }

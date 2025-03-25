@@ -11,11 +11,11 @@ const Header = () => {
 			<div className="container">
 				<div className={styles.left}>
 					<a href="https://azs.a-100.by">
-						<img src={logo} alt="logo" />
+						<img src={logo} alt="logo" className={styles.logo} />
 					</a>
 					<p dangerouslySetInnerHTML={{ __html: content?.headTitle ?? "" }}></p>
 				</div>
-				<img src={logoShop} alt="logo-shop" />
+				<img src={logoShop} alt="logo-shop" className={styles.logoShop} />
 			</div>
 		</header>
 	);
