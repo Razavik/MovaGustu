@@ -1,4 +1,4 @@
-import {useState, FC, useEffect, ReactNode} from "react";
+import {useState, FC, useEffect} from "react";
 import {
 	DndContext,
 	pointerWithin,
@@ -19,6 +19,9 @@ import SortableLabel from "@components/SortableLabel/SortableLabel";
 import styles from "./game.module.css";
 import { Data, InitialLabels } from "@components/pages/GamePage/types/types";
 import closeButton from "@assets/img/close-button.svg";
+import Loader from "@components/Loader/Loader.tsx";
+import {useGetCupons} from "../../../../hooks/useGetCupons.ts";
+import {useGetContent} from "../../../../hooks/useGetContent.ts";
 
 // Функция для перемешивания массива (алгоритм Фишера-Йейтса)
 const shuffleArray = <T extends unknown>(array: T[]): T[] => {
@@ -102,15 +105,39 @@ interface Game {
 	setWin: (value: boolean) => void;
 }
 
-const titlesByStage: { [key: number]: ReactNode } = {
-	1: <>Суаднясіце <b>ступень абсмажвання кавы</b> з малюнкамі і атрымайце бонусы</>,
-	2: <>Суаднясіце <b>ступень памолу</b> з малюнкамі і атрымайце бонусы</>,
-	3: <>Суаднясіце <b>кававыя напоі</b> з малюнкамі і атрымайце бонусы</>,
-	4: <>Суаднясіце <b>кававыя аксесуары</b> з іх малюнкамі і атрымайце бонусы</>
-}
-
 const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
+	const {
+		data: content
+	} = useGetContent()
+
+	const titlesByStage: { [key: number]: string } = {
+		1: (content?.firstTask?.firstTaskTitle ?? ""),
+		2: (content?.secondTask?.secondTaskTitle ?? ""),
+		3: (content?.thirdTask?.thirdTaskTitle ?? ""),
+		4: (content?.fourthTask?.fourthTaskTitle ?? "")
+	}
+
+	const descriptions = [
+		(content?.firstTask?.firstTaskFooter ?? ""),
+		(content?.secondTask?.secondTaskFooter ?? ""),
+		(content?.thirdTask?.thirdTaskFooter ?? ""),
+		(content?.fourthTask?.fourthTaskFooter ?? ""),
+	]
+
+	const buttons = [
+		(content?.firstTask?.firstTaskBtn ?? ""),
+		(content?.secondTask?.secondTaskBtn ?? ""),
+		(content?.thirdTask?.thirdTaskBtn ?? ""),
+		(content?.fourthTask?.fourthTaskBtn ?? ""),
+	]
+
 	const { data, initialLabels } = currentData;
+
+	const {
+		mutateAsync: getCupons,
+		isPending: loadCupons,
+		error: errorCupons
+	} = useGetCupons()
 
 	// Перемешиваем плашки при каждом рендере компонента
 	const [shuffledLabels, setShuffledLabels] = useState(() => shuffleArray([...initialLabels]));
@@ -303,7 +330,7 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 	);
 
 	// Проверка правильности расположения плашек
-	const checkAnswers = () => {
+	const checkAnswers = async () => {
 		// Проверяем, все ли плашки размещены
 		const allPlaced = targetContainers.every((container) => container.labelId !== null);
 
@@ -338,6 +365,7 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 
 		// Если все ответы правильные
 		if (correctCount === data.length) {
+			await getCupons(currentStage)
 			setWin(true);
 		} else {
 			setShowModal(true);
@@ -365,8 +393,7 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 	return (
 		<div className={styles.gameContainer}>
 			<div className={styles.gameContent}>
-				<h2 className={styles.title}>
-					{ titlesByStage[currentStage] ?? <></> }
+				<h2 dangerouslySetInnerHTML={{ __html: (titlesByStage[currentStage - 1] ?? "")  }} className={styles.title}>
 				</h2>
 
 				<DndContext
@@ -459,7 +486,7 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 					</DragOverlay>
 				</DndContext>
 
-				<button className={styles.checkButton} onClick={checkAnswers}>
+				<button disabled={loadCupons} className={styles.checkButton} onClick={checkAnswers}>
 					<svg
 						width="296"
 						height="66"
@@ -483,14 +510,23 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 							fill="white"
 						/>
 					</svg>
-					<span className={styles.buttonText}>Праверыць</span>
+					<span dangerouslySetInnerHTML={{ __html: (buttons[currentStage - 1] ?? "") }} className={styles.buttonText}></span>
+					{
+						loadCupons
+						&&
+						<div className={styles.loader}>
+							<Loader />
+						</div>
+					}
 				</button>
-
-				<p className={styles.description}>
-					Суаднясіце правільныя сцверджанні з адпаведнымі малюнкамі. Для гэтага
-					перамясціце "воблачка", утрымліваючы правую кнопку мышы (на камп'ютары) ці
-					заціскаючы пальцам (на экране тэлефона). Як зробіце выбар, зафіксуйце камбінацыю
-					кнопкай "Праверыць".
+				{
+					errorCupons
+					&&
+					<p className={styles.description_error}>
+						Адбылася памылка. Паспрабуйце адправіць адказ зноў
+					</p>
+				}
+				<p dangerouslySetInnerHTML={{ __html: (descriptions[currentStage] ?? "") }} className={styles.description}>
 				</p>
 				{/* Модальное окно с ошибкой */}
 				{showModal && (

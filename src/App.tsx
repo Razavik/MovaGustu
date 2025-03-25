@@ -1,15 +1,26 @@
 import "./App.css";
-import AppRoutes from "./routes";
-import { BrowserRouter as Router } from "react-router-dom";
+import {BrowserRouter as Router} from "react-router-dom";
+import AppRoutes from "./routes.tsx";
+import {useGetContent} from "./hooks/useGetContent.ts";
 
 function App() {
-	return (
-		<div id={"root"}>
-			<Router>
-				<AppRoutes />
-			</Router>
-		</div>
-	);
+    const {
+        isLoading: loadContent
+    } = useGetContent()
+
+    return (
+        <>
+            {
+                !loadContent
+                &&
+                <div id={"root"}>
+                    <Router>
+                        <AppRoutes/>
+                    </Router>
+                </div>
+            }
+        </>
+    );
 }
 
 export default App;

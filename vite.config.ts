@@ -5,6 +5,16 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [react()],
+    server: {
+        proxy: {
+            '/bx-api': {
+                target: 'https://azs.a-100.by',
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/bx-api/, ''),
+            }
+        }
+    },
     base: "/coffee-quiz",
     build: {
         rollupOptions: {

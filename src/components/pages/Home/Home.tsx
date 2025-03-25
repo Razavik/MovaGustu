@@ -2,21 +2,24 @@ import styles from "./Home.module.css";
 import firstBlock from "@assets/img/first-block-img.png";
 import beans from "@assets/img/beans.png";
 import {Dispatch, SetStateAction} from "react";
+import {useGetContent} from "../../../hooks/useGetContent.ts";
 
 interface HomeProps {
 	setIsGame: Dispatch<SetStateAction<boolean>>;
 }
 
 const Home = ({ setIsGame }: HomeProps) => {
+	const {
+		data: content
+	} = useGetContent()
+
 	return (
 		<div className={styles.homeContainer}>
-			<h1 className={styles.title}>Выбiрай ЦІКАВУЮ вясну!</h1>
+			<h1 dangerouslySetInnerHTML={{ __html: (content?.mainPage?.mainTitle ?? "") }} className={styles.title}></h1>
 			<img src={firstBlock} alt="img" className={styles.firstBlock} />
 			<div className={styles.textContainer}>
-				<h2 className={styles.subTitle}>Дакажы, што ты сапраўдны знаток кавы!</h2>
-				<p className={styles.text}>
-					Правер свае веды пра каву! Выканай <b>4 заданні</b> і атрымай <b>бонусы</b> на
-					кожным этапе!
+				<h2 dangerouslySetInnerHTML={{ __html: (content?.mainPage?.mainSubTitle ?? "") }} className={styles.subTitle}></h2>
+				<p dangerouslySetInnerHTML={{ __html: (content?.mainPage?.mainSubSubTitle ?? "") }} className={styles.text}>
 				</p>
 				<button
 					onClick={() => {
@@ -45,13 +48,10 @@ const Home = ({ setIsGame }: HomeProps) => {
 							fill="white"
 						/>
 					</svg>
-					<span>Гуляць</span>
+					<span>{ content?.mainPage?.mainButton ?? "" }</span>
 				</button>
 			</div>
-			<p className={styles.odo}>
-				ОДО "Астотрейдинг". УНП 690362737
-				<br />
-				223053, Минский район, д. Боровая, д. 7, админ. помещения, кабинет 24
+			<p dangerouslySetInnerHTML={{ __html: (content?.mainPage?.mainFooter ?? "")  }} className={styles.odo}>
 			</p>
 			<img className={styles.firstBeans} src={beans} alt="beans" />
 			<img className={styles.secondBeans} src={beans} alt="beans" />

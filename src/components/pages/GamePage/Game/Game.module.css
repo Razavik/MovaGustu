@@ -110,6 +110,20 @@
 	margin-top: 32px;
 }
 
+.checkButton:disabled {
+	pointer-events: none;
+	.buttonText {
+		opacity: 0.3;
+	}
+}
+
+.loader {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
 .buttonText {
 	position: relative;
 	font-size: 40px;
@@ -125,6 +139,14 @@
 .description {
 	max-width: 1239px;
 	color: white;
+	margin: 0 auto;
+	text-align: center;
+	margin-top: 27px;
+}
+
+.description_error {
+	max-width: 1239px;
+	color: var(--bordo);
 	margin: 0 auto;
 	text-align: center;
 	margin-top: 27px;
