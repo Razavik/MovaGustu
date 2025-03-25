@@ -1,4 +1,4 @@
-import {useState, FC, useEffect} from "react";
+import { useState, FC, useEffect } from "react";
 import {
 	DndContext,
 	pointerWithin,
@@ -20,8 +20,8 @@ import styles from "./game.module.css";
 import { Data, InitialLabels } from "@components/pages/GamePage/types/types";
 import closeButton from "@assets/img/close-button.svg";
 import Loader from "@components/Loader/Loader.tsx";
-import {useGetCupons} from "../../../../hooks/useGetCupons.ts";
-import {useGetContent} from "../../../../hooks/useGetContent.ts";
+import { useGetCupons } from "../../../../hooks/useGetCupons.ts";
+import { useGetContent } from "../../../../hooks/useGetContent.ts";
 
 // Функция для перемешивания массива (алгоритм Фишера-Йейтса)
 const shuffleArray = <T extends unknown>(array: T[]): T[] => {
@@ -39,6 +39,12 @@ interface TargetContainer {
 	labelId: string | null;
 }
 
+interface SourceContainer {
+	id: string;
+	coffeeId: string;
+	labelId: string | null;
+}
+
 // Начальное состояние контейнеров для целевых плашек
 const initialTargetContainers: TargetContainer[] = [
 	{ id: "container-0", labelId: null },
@@ -52,10 +58,12 @@ const DroppableContainer = ({
 	id,
 	children,
 	isDroppable,
+	isBackground = true,
 }: {
 	id: string;
 	children: React.ReactNode;
 	isDroppable: boolean;
+	isBackground?: boolean;
 }) => {
 	// Используем хук из dnd-kit для создания контейнера, в который можно что-то перетаскивать
 	const { setNodeRef } = useDroppable({
@@ -70,27 +78,29 @@ const DroppableContainer = ({
 			data-id={id}
 			className={`${styles.labelContainer} ${isDroppable ? styles.droppable : ""}`}
 		>
-			<svg
-				width="296"
-				height="66"
-				viewBox="0 0 296 66"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg"
-				style={{
-					position: "absolute",
-					top: 0,
-					left: 0,
-					width: "100%",
-					height: "100%",
-					filter: "drop-shadow(0 4px 2px rgba(0, 0, 0, 0.6))",
-					pointerEvents: "none",
-				}}
-			>
-				<path
-					d="M12.7937 64.648L1.36438 53.1836V13.7174L14.2188 0.823486H281.786L294.64 13.7174V53.1835L283.211 64.648H12.7937Z"
-					stroke="white"
-				/>
-			</svg>
+			{isBackground && (
+				<svg
+					width="296"
+					height="66"
+					viewBox="0 0 296 66"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+					style={{
+						position: "absolute",
+						top: 0,
+						left: 0,
+						width: "100%",
+						height: "100%",
+						filter: "drop-shadow(0 4px 2px rgba(0, 0, 0, 0.6))",
+						pointerEvents: "none",
+					}}
+				>
+					<path
+						d="M12.7937 64.648L1.36438 53.1836V13.7174L14.2188 0.823486H281.786L294.64 13.7174V53.1835L283.211 64.648H12.7937Z"
+						stroke="white"
+					/>
+				</svg>
+			)}
 			{children}
 		</div>
 	);
@@ -101,108 +111,122 @@ interface Game {
 		data: Data[];
 		initialLabels: InitialLabels[];
 	};
-	currentStage: number,
+	currentStage: number;
 	setWin: (value: boolean) => void;
 }
 
 const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
-	const {
-		data: content
-	} = useGetContent()
+	const { data: content } = useGetContent();
 
 	const titlesByStage: { [key: number]: string } = {
-		1: (content?.firstTask?.firstTaskTitle ?? ""),
-		2: (content?.secondTask?.secondTaskTitle ?? ""),
-		3: (content?.thirdTask?.thirdTaskTitle ?? ""),
-		4: (content?.fourthTask?.fourthTaskTitle ?? "")
-	}
+		1: content?.firstTask?.firstTaskTitle ?? "",
+		2: content?.secondTask?.secondTaskTitle ?? "",
+		3: content?.thirdTask?.thirdTaskTitle ?? "",
+		4: content?.fourthTask?.fourthTaskTitle ?? "",
+	};
 
-	console.log(titlesByStage)
+	console.log(titlesByStage);
 
 	const descriptions = [
-		(content?.firstTask?.firstTaskFooter ?? ""),
-		(content?.secondTask?.secondTaskFooter ?? ""),
-		(content?.thirdTask?.thirdTaskFooter ?? ""),
-		(content?.fourthTask?.fourthTaskFooter ?? ""),
-	]
+		content?.firstTask?.firstTaskFooter ?? "",
+		content?.secondTask?.secondTaskFooter ?? "",
+		content?.thirdTask?.thirdTaskFooter ?? "",
+		content?.fourthTask?.fourthTaskFooter ?? "",
+	];
 
-	console.log(descriptions[currentStage - 1])
+	console.log(descriptions[currentStage - 1]);
 
 	const buttons = [
-		(content?.firstTask?.firstTaskBtn ?? ""),
-		(content?.secondTask?.secondTaskBtn ?? ""),
-		(content?.thirdTask?.thirdTaskBtn ?? ""),
-		(content?.fourthTask?.fourthTaskBtn ?? ""),
-	]
+		content?.firstTask?.firstTaskBtn ?? "",
+		content?.secondTask?.secondTaskBtn ?? "",
+		content?.thirdTask?.thirdTaskBtn ?? "",
+		content?.fourthTask?.fourthTaskBtn ?? "",
+	];
 
 	const { data, initialLabels } = currentData;
 
-	const {
-		mutateAsync: getCupons,
-		isPending: loadCupons,
-		error: errorCupons
-	} = useGetCupons()
+	const { mutateAsync: getCupons, isPending: loadCupons, error: errorCupons } = useGetCupons();
 
 	// Перемешиваем плашки при каждом рендере компонента
-	const [shuffledLabels, setShuffledLabels] = useState(() => shuffleArray([...initialLabels]));
-
-	// Состояние для перемещенных плашек (вышедших из исходного контейнера)
+	const [shuffledLabels, setShuffledLabels] = useState<InitialLabels[]>([]);
 	const [movedLabels, setMovedLabels] = useState<string[]>([]);
+	const [targetContainers, setTargetContainers] =
+		useState<TargetContainer[]>(initialTargetContainers);
+	const [sourceContainers, setSourceContainers] = useState<SourceContainer[]>([]);
 
-	// Состояние для отслеживания позиций плашек в исходном контейнере
-	const [labelPositions, setLabelPositions] = useState<Record<string, number>>(() =>
-		shuffledLabels.reduce((acc, label, index) => {
-			acc[label.id] = index;
-			return acc;
-		}, {} as Record<string, number>)
-	);
-
-	// Состояние для целевых контейнеров
-	const [targetContainers, setTargetContainers] = useState(initialTargetContainers);
-
-	// Состояние для активной плашки при перетаскивании
+	// Состояния перетаскивания
 	const [activeId, setActiveId] = useState<string | null>(null);
-	const [activeLabel, setActiveLabel] = useState<any>(null);
+	const [activeLabel, setActiveLabel] = useState<InitialLabels | null>(null);
 
 	// Состояние для отслеживания правильных ответов
 	const [isChecked, setIsChecked] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 
-	// Сбрасываем состояния при изменении уровня
-	useEffect(() => {
+	// Сброс игры к начальному состоянию
+	const resetGame = () => {
+		// Перемешиваем плашки
 		const newShuffledLabels = shuffleArray([...initialLabels]);
 		setShuffledLabels(newShuffledLabels);
 
+		// Сбрасываем состояние перемещенных плашек - важно сделать это до сброса контейнеров
 		setMovedLabels([]);
 
-		setLabelPositions(
-			newShuffledLabels.reduce((acc, label, index) => {
-				acc[label.id] = index;
-				return acc;
-			}, {} as Record<string, number>)
-		);
+		// Сбрасываем целевые контейнеры - делаем это ПЕРЕД обновлением позиций
+		const newTargetContainers = initialTargetContainers.map((container) => ({
+			...container,
+			labelId: null,
+		}));
+		setTargetContainers(newTargetContainers);
 
-		setTargetContainers(initialTargetContainers);
-
+		// Сбрасываем состояния проверки
 		setIsChecked(false);
 		setShowModal(false);
 
+		// Сбрасываем активную плашку
 		setActiveId(null);
 		setActiveLabel(null);
-	}, [currentData, initialLabels]);
+	};
+
+	// Инициализация игры
+	useEffect(() => {
+		// Сбрасываем состояния при смене уровня
+		setIsChecked(false);
+		setMovedLabels([]);
+		setActiveId(null);
+		setActiveLabel(null);
+
+		// Перемешиваем плашки
+		const shuffled = shuffleArray([...initialLabels]);
+		setShuffledLabels(shuffled);
+
+		// Сбрасываем целевые контейнеры
+		const resetTargetContainers = initialTargetContainers.map((container) => ({
+			...container,
+			labelId: null,
+		}));
+		setTargetContainers(resetTargetContainers);
+
+		// Инициализируем исходные контейнеры
+		const initialSourceContainers = data.map((coffee, index) => ({
+			id: `source-${coffee.id}`,
+			coffeeId: coffee.id,
+			labelId: shuffled[index]?.id || null, // Просто берем плашку с соответствующим индексом
+		}));
+		setSourceContainers(initialSourceContainers);
+	}, [initialLabels, data]);
 
 	// Обработчик начала перетаскивания
 	const handleDragStart = (event: DragStartEvent) => {
 		setActiveId(event.active.id as string);
-		const draggedLabel =
-			shuffledLabels.find((label) => label.id === event.active.id) ||
-			shuffledLabels.find((label) => label.id === event.active.id);
+		const draggedLabel = shuffledLabels.find((label) => label.id === event.active.id) || null;
 		setActiveLabel(draggedLabel);
 	};
 
-	// Обработчик окончания перетаскивания
+	// Обработка завершения перетаскивания
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
+
+		// Сбрасываем активные состояния
 		setActiveId(null);
 		setActiveLabel(null);
 
@@ -211,104 +235,146 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 		const activeId = active.id as string;
 		const overId = over.id as string;
 
-		// Перетаскивание из исходного контейнера в целевой
-		if (
-			shuffledLabels.some((label) => label.id === activeId) &&
-			!movedLabels.includes(activeId)
-		) {
-			// Проверяем, является ли цель контейнером
-			if (overId.startsWith("container-")) {
-				const containerIndex = parseInt(overId.split("-")[1]);
+		// Определяем тип контейнеров
+		const isSourceContainer = (id: string) => id.startsWith("source-");
+		const isTargetContainer = (id: string) => id.startsWith("container-");
 
-				// Проверяем, есть ли уже метка в этом контейнере
-				if (targetContainers[containerIndex].labelId !== null) {
-					const existingLabelId = targetContainers[containerIndex].labelId;
+		// Находим контейнеры источника и назначения
+		const activeSourceIndex = sourceContainers.findIndex(
+			(container) => container.labelId === activeId
+		);
+		const activeTargetIndex = targetContainers.findIndex(
+			(container) => container.labelId === activeId
+		);
+		const isActiveFromSource = activeSourceIndex !== -1;
+		const isActiveFromTarget = activeTargetIndex !== -1;
 
-					// Сохраняем позицию активной метки, чтобы существующая метка заняла эту позицию
-					const activePosition = labelPositions[activeId];
+		// Извлекаем id исходных и целевых контейнеров
+		const overIsSource = isSourceContainer(overId);
+		const overIsTarget = isTargetContainer(overId);
 
-					// Возвращаем существующую метку в исходный контейнер на место перемещаемой метки
-					if (existingLabelId) {
-						// Удаляем текущую метку из списка перемещенных
-						setMovedLabels((prev) => prev.filter((id) => id !== existingLabelId));
+		// Извлекаем индексы контейнеров назначения
+		const overSourceIndex = overIsSource
+			? sourceContainers.findIndex((c) => c.id === overId)
+			: -1;
+		const overTargetIndex = overIsTarget ? parseInt(overId.split("-")[1]) : -1;
 
-						// Обновляем позиции: существующая метка занимает позицию активной
-						setLabelPositions((prev) => ({
-							...prev,
-							[existingLabelId]: activePosition,
-						}));
+		// 1. Перемещение в исходный контейнер
+		if (overIsSource) {
+			// Копируем состояния
+			const newSourceContainers = [...sourceContainers];
+			const newTargetContainers = [...targetContainers];
+
+			// Если плашка перемещается из целевого контейнера в исходный
+			if (isActiveFromTarget) {
+				// Если в исходном уже есть плашка - меняем местами
+				if (
+					newSourceContainers[overSourceIndex].labelId &&
+					newSourceContainers[overSourceIndex].labelId !== activeId
+				) {
+					// Перемещаем плашку из исходного в целевой
+					const sourceLabelId = newSourceContainers[overSourceIndex].labelId;
+					newTargetContainers[activeTargetIndex].labelId = sourceLabelId;
+
+					// Добавляем в перемещенные
+					if (sourceLabelId && !movedLabels.includes(sourceLabelId)) {
+						setMovedLabels((prev) => [...prev, sourceLabelId]);
 					}
-
-					// Добавляем новую метку в список перемещенных
-					setMovedLabels((prev) => [...prev, activeId]);
-
-					// Заменяем метку в контейнере
-					setTargetContainers((prevContainers) => {
-						const newContainers = [...prevContainers];
-						newContainers[containerIndex].labelId = activeId;
-						return newContainers;
-					});
-
-					// Сбрасываем проверку при перетаскивании
-					if (isChecked) {
-						setIsChecked(false);
-					}
-
-					return;
-				}
-
-				// Если контейнер пустой, то просто добавляем метку
-				setTargetContainers((prevContainers) => {
-					const newContainers = [...prevContainers];
-					newContainers[containerIndex].labelId = activeId;
-					return newContainers;
-				});
-
-				// Добавляем метку в список перемещенных
-				setMovedLabels((prev) => [...prev, activeId]);
-
-				// Сбрасываем проверку при перетаскивании
-				if (isChecked) {
-					setIsChecked(false);
-				}
-			}
-		} else {
-			// Перетаскивание между целевыми контейнерами
-			// Находим контейнер, из которого перетаскиваем
-			const sourceContainerIndex = targetContainers.findIndex(
-				(container) => container.labelId === activeId
-			);
-
-			if (sourceContainerIndex !== -1 && overId.startsWith("container-")) {
-				const targetContainerIndex = parseInt(overId.split("-")[1]);
-
-				// Если уже есть метка в целевом контейнере, меняем их местами
-				if (targetContainers[targetContainerIndex].labelId !== null) {
-					// Меняем метки местами
-					setTargetContainers((prevContainers) => {
-						const newContainers = [...prevContainers];
-						const targetLabelId = newContainers[targetContainerIndex].labelId;
-
-						newContainers[targetContainerIndex].labelId = activeId;
-						newContainers[sourceContainerIndex].labelId = targetLabelId;
-
-						return newContainers;
-					});
 				} else {
-					// Если контейнер пустой, просто перемещаем метку
-					setTargetContainers((prevContainers) => {
-						const newContainers = [...prevContainers];
-						newContainers[targetContainerIndex].labelId = activeId;
-						newContainers[sourceContainerIndex].labelId = null;
-						return newContainers;
-					});
+					// Просто очищаем целевой контейнер
+					newTargetContainers[activeTargetIndex].labelId = null;
 				}
 
-				// Сбрасываем проверку
-				if (isChecked) {
-					setIsChecked(false);
+				// Устанавливаем активную плашку в исходный контейнер
+				newSourceContainers[overSourceIndex].labelId = activeId;
+
+				// Обновляем состояние
+				setSourceContainers(newSourceContainers);
+				setTargetContainers(newTargetContainers);
+
+				// Удаляем из перемещенных
+				setMovedLabels((prev) => prev.filter((id) => id !== activeId));
+			}
+			// Если плашка перемещается из одного исходного контейнера в другой
+			else if (isActiveFromSource) {
+				// Копируем состояние исходных контейнеров
+				const newSourceContainers = [...sourceContainers];
+
+				// Если в целевом исходном уже есть плашка - меняем местами
+				if (
+					newSourceContainers[overSourceIndex].labelId &&
+					newSourceContainers[overSourceIndex].labelId !== activeId
+				) {
+					// Получаем id плашки в целевом исходном контейнере
+					const overLabelId = newSourceContainers[overSourceIndex].labelId;
+
+					// Меняем плашки местами
+					newSourceContainers[activeSourceIndex].labelId = overLabelId;
+					newSourceContainers[overSourceIndex].labelId = activeId;
+				} else {
+					// Просто перемещаем плашку
+					newSourceContainers[activeSourceIndex].labelId = null;
+					newSourceContainers[overSourceIndex].labelId = activeId;
+				}
+
+				// Обновляем состояние
+				setSourceContainers(newSourceContainers);
+			}
+		}
+		// 2. Перемещение в целевой контейнер
+		else if (overIsTarget) {
+			// Копируем состояния
+			const newSourceContainers = [...sourceContainers];
+			const newTargetContainers = [...targetContainers];
+
+			// Получаем текущую плашку в целевом контейнере (если есть)
+			const currentLabelInTarget = newTargetContainers[overTargetIndex].labelId;
+
+			// Если плашка перемещается из исходного контейнера
+			if (isActiveFromSource) {
+				// Если в целевом уже есть плашка - меняем местами
+				if (currentLabelInTarget) {
+					// Перемещаем плашку из целевого в исходный
+					newSourceContainers[activeSourceIndex].labelId = currentLabelInTarget;
+
+					// Удаляем из перемещенных
+					setMovedLabels((prev) => prev.filter((id) => id !== currentLabelInTarget));
+				} else {
+					// Очищаем исходный контейнер
+					newSourceContainers[activeSourceIndex].labelId = null;
+				}
+
+				// Помещаем активную плашку в целевой
+				newTargetContainers[overTargetIndex].labelId = activeId;
+
+				// Добавляем в перемещенные
+				if (!movedLabels.includes(activeId)) {
+					setMovedLabels((prev) => [...prev, activeId]);
 				}
 			}
+			// Если плашка перемещается из одного целевого в другой
+			else if (isActiveFromTarget) {
+				// Если в целевом уже есть плашка - меняем местами
+				if (currentLabelInTarget) {
+					// Меняем местами
+					newTargetContainers[activeTargetIndex].labelId = currentLabelInTarget;
+				} else {
+					// Очищаем исходный целевой
+					newTargetContainers[activeTargetIndex].labelId = null;
+				}
+
+				// Помещаем активную плашку в целевой
+				newTargetContainers[overTargetIndex].labelId = activeId;
+			}
+
+			// Обновляем состояния
+			setSourceContainers(newSourceContainers);
+			setTargetContainers(newTargetContainers);
+		}
+
+		// Сбрасываем проверку при перетаскивании
+		if (isChecked) {
+			setIsChecked(false);
 		}
 	};
 
@@ -369,7 +435,7 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 
 		// Если все ответы правильные
 		if (correctCount === data.length) {
-			await getCupons(currentStage)
+			await getCupons(currentStage);
 			setWin(true);
 		} else {
 			setShowModal(true);
@@ -378,27 +444,25 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 
 	// Обработка закрытия модального окна
 	const handleCloseModal = () => {
-		setShowModal(false);
-		setIsChecked(false);
+		resetGame(); // Сбрасываем игру к начальному состоянию
 	};
 
-	// Получаем плашку для контейнера
-	const getLabelForContainer = (containerId: string) => {
-		const containerIndex = parseInt(containerId.split("-")[1]);
-		const labelId = targetContainers[containerIndex].labelId;
-
-		if (labelId) {
-			return shuffledLabels.find((label) => label.id === labelId);
+	// Получаем текущую плашку в исходном контейнере по ID
+	const getLabelForSourceContainer = (sourceId: string) => {
+		const container = sourceContainers.find((c) => c.id === sourceId);
+		if (container && container.labelId) {
+			return shuffledLabels.find((label) => label.id === container.labelId);
 		}
-
 		return null;
 	};
 
 	return (
 		<div className={styles.gameContainer}>
 			<div className={styles.gameContent}>
-				<h2 dangerouslySetInnerHTML={{ __html: (titlesByStage[currentStage] ?? "")  }} className={styles.title}>
-				</h2>
+				<h2
+					dangerouslySetInnerHTML={{ __html: titlesByStage[currentStage] ?? "" }}
+					className={styles.title}
+				></h2>
 
 				<DndContext
 					collisionDetection={pointerWithin}
@@ -406,69 +470,92 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 					onDragEnd={handleDragEnd}
 					sensors={sensors}
 				>
-					{/* Контейнер с изображениями кофе и контейнерами для плашек */}
+					{/* Контейнер с карточками кофе и контейнерами для плашек */}
 					<div className={styles.gameLayout}>
-						{/* Исходный контейнер с плашками вверху */}
-						<div className={styles.sourceContainer}>
-							{/* Создаем массив со слотами для плашек */}
-							{Array.from({ length: shuffledLabels.length }).map((_, slotIndex) => {
-								// Находим ID плашки, которая должна быть в этом слоте
-								const labelId = Object.entries(labelPositions).find(
-									([id, position]) =>
-										position === slotIndex && !movedLabels.includes(id)
-								)?.[0];
-
-								// Находим информацию о плашке по ID
-								const label = labelId
-									? shuffledLabels.find((l) => l.id === labelId)
-									: null;
-
-								return (
-									<div
-										className={styles.labelSourceContainer}
-										key={`slot-${slotIndex}`}
-									>
-										{label && activeId !== label.id ? (
-											<SortableLabel
-												key={label.id}
-												id={label.id}
-												label={label.type}
-												containerId="source"
-											/>
-										) : (
-											<div className={styles.emptySpace}></div>
-										)}
-									</div>
-								);
-							})}
-						</div>
-
-						{/* Контейнер с карточками кофе */}
+						{/* Отображаем карточки кофе с исходными и целевыми контейнерами */}
 						<div className={styles.coffeeCardsContainer}>
 							{data.map((coffee, index) => {
-								const containerId = `container-${index}`;
-								const label = getLabelForContainer(containerId);
-
 								return (
 									<div key={coffee.id} className={styles.coffeeCardWrapper}>
-										<DroppableContainer
-											id={containerId}
-											isDroppable={!isChecked}
-										>
-											{/* Показываем метку, если она есть в этом контейнере */}
-											{label && activeId !== label.id && (
-												<SortableContext
-													items={[label.id]}
-													strategy={rectSortingStrategy}
-												>
-													<SortableLabel
-														id={label.id}
-														label={label.type}
-														containerId={containerId}
-													/>
-												</SortableContext>
-											)}
-										</DroppableContainer>
+										{/* Исходный контейнер для этого кофе */}
+										<div className={styles.sourceTargetContainer}>
+											<DroppableContainer
+												id={`source-${coffee.id}`}
+												isDroppable={true}
+												isBackground={false}
+											>
+												{(() => {
+													const sourceContainerId = `source-${coffee.id}`;
+													const sourceLabel =
+														getLabelForSourceContainer(
+															sourceContainerId
+														);
+
+													return (
+														sourceLabel &&
+														activeId !== sourceLabel.id && (
+															<SortableContext
+																items={[sourceLabel.id]}
+																strategy={rectSortingStrategy}
+															>
+																<SortableLabel
+																	id={sourceLabel.id}
+																	label={sourceLabel.type}
+																	containerId={sourceContainerId}
+																/>
+															</SortableContext>
+														)
+													);
+												})()}
+
+												{activeId && (
+													<div className={styles.ghostLabel}></div>
+												)}
+											</DroppableContainer>
+
+											{/* Целевой контейнер для этого кофе */}
+											<DroppableContainer
+												id={`container-${index}`}
+												isDroppable={!isChecked}
+											>
+												{(() => {
+													const targetContainer = targetContainers[index];
+													const targetLabelId = targetContainer?.labelId;
+													const targetLabel = targetLabelId
+														? shuffledLabels.find(
+																(label) =>
+																	label.id === targetLabelId
+														  )
+														: null;
+
+													return (
+														targetLabel && (
+															<SortableContext
+																items={[targetLabel.id]}
+																strategy={rectSortingStrategy}
+															>
+																{activeId === targetLabel.id ? (
+																	// Плашка-призрак на месте перетаскиваемой плашки
+																	<div
+																		className={
+																			styles.ghostLabel
+																		}
+																	></div>
+																) : (
+																	<SortableLabel
+																		id={targetLabel.id}
+																		label={targetLabel.type}
+																		containerId={`container-${index}`}
+																	/>
+																)}
+															</SortableContext>
+														)
+													);
+												})()}
+											</DroppableContainer>
+										</div>
+
+										{/* Изображение кофе */}
 										<CoffeeCard image={coffee.image} />
 									</div>
 								);
@@ -514,24 +601,25 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 							fill="white"
 						/>
 					</svg>
-					<span dangerouslySetInnerHTML={{ __html: (buttons[currentStage - 1] ?? "") }} className={styles.buttonText}></span>
-					{
-						loadCupons
-						&&
+					<span
+						dangerouslySetInnerHTML={{ __html: buttons[currentStage - 1] ?? "" }}
+						className={styles.buttonText}
+					></span>
+					{loadCupons && (
 						<div className={styles.loader}>
 							<Loader />
 						</div>
-					}
+					)}
 				</button>
-				{
-					errorCupons
-					&&
+				{errorCupons && (
 					<p className={styles.description_error}>
 						Адбылася памылка. Паспрабуйце адправіць адказ зноў
 					</p>
-				}
-				<p dangerouslySetInnerHTML={{ __html: (descriptions[currentStage - 1] ?? "") }} className={styles.description}>
-				</p>
+				)}
+				<p
+					dangerouslySetInnerHTML={{ __html: descriptions[currentStage - 1] ?? "" }}
+					className={styles.description}
+				></p>
 				{/* Модальное окно с ошибкой */}
 				{showModal && (
 					<div className={styles.modalOverlay}>

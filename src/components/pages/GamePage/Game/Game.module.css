@@ -28,7 +28,7 @@
 }
 
 /* Стиль для исходного контейнера с плашками */
-.sourceContainer {
+.sourceContainer > div {
 	display: grid;
 	grid-template-columns: repeat(4, 360px);
 	grid-template-rows: 65px;
@@ -69,9 +69,19 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 12px;
+	gap: 10px;
+	margin-bottom: 20px;
 	max-width: 360px;
 	width: 100%;
+}
+
+.sourceTargetContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	gap: 10px;
+	min-height: 120px; /* Достаточно места для двух плашек */
 }
 
 .labelContainer {
@@ -79,9 +89,12 @@
 	width: 296px;
 	height: 65px;
 	z-index: 1;
+	margin-bottom: 20px;
 }
 
 .droppable {
+	min-height: 66px;
+	position: relative;
 	cursor: pointer;
 	transition: all 0.3s ease;
 	background-color: transparent;
@@ -132,9 +145,9 @@
 	color: var(--bordo);
 }
 
-.checkButton:hover .buttonText {
-	/* font-weight: 600; */
-}
+/* .checkButton:hover .buttonText {
+	font-weight: 600;
+} */
 
 .description {
 	max-width: 1239px;
@@ -220,6 +233,20 @@
 	line-height: 74px;
 }
 
-.bonusButton:hover span {
-	/* font-weight: 500; */
+/* .bonusButton:hover span {
+	font-weight: 500; 
+} */
+
+.ghostLabel {
+	padding: 10px;
+	cursor: default;
+	user-select: none;
+	width: 100%;
+	text-align: center;
+	font-size: 16px;
+	color: #777; /* Серый цвет текста */
+	min-height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }

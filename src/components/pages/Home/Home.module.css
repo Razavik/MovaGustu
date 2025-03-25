@@ -55,9 +55,9 @@ h1.title {
 	color: var(--bordo);
 }
 
-.button:hover span {
-	/* font-weight: 600; */
-}
+/* .button:hover span {
+	font-weight: 600;
+} */
 
 .firstBlock {
 	position: absolute;
