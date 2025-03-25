@@ -117,12 +117,16 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 		4: (content?.fourthTask?.fourthTaskTitle ?? "")
 	}
 
+	console.log(titlesByStage)
+
 	const descriptions = [
 		(content?.firstTask?.firstTaskFooter ?? ""),
 		(content?.secondTask?.secondTaskFooter ?? ""),
 		(content?.thirdTask?.thirdTaskFooter ?? ""),
 		(content?.fourthTask?.fourthTaskFooter ?? ""),
 	]
+
+	console.log(descriptions[currentStage - 1])
 
 	const buttons = [
 		(content?.firstTask?.firstTaskBtn ?? ""),
@@ -393,7 +397,7 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 	return (
 		<div className={styles.gameContainer}>
 			<div className={styles.gameContent}>
-				<h2 dangerouslySetInnerHTML={{ __html: (titlesByStage[currentStage - 1] ?? "")  }} className={styles.title}>
+				<h2 dangerouslySetInnerHTML={{ __html: (titlesByStage[currentStage] ?? "")  }} className={styles.title}>
 				</h2>
 
 				<DndContext
@@ -526,7 +530,7 @@ const Game: FC<Game> = ({ currentData, currentStage, setWin }) => {
 						Адбылася памылка. Паспрабуйце адправіць адказ зноў
 					</p>
 				}
-				<p dangerouslySetInnerHTML={{ __html: (descriptions[currentStage] ?? "") }} className={styles.description}>
+				<p dangerouslySetInnerHTML={{ __html: (descriptions[currentStage - 1] ?? "") }} className={styles.description}>
 				</p>
 				{/* Модальное окно с ошибкой */}
 				{showModal && (
