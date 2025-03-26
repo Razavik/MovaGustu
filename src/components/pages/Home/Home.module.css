@@ -197,18 +197,10 @@ h1.title {
 	}
 }
 
-@media (max-width: 768px) {
-	h1.title {
-		font-size: clamp(37px, 10vw, 80px);
-		line-height: clamp(37px, 10vw, 80px);
-		max-width: min-content;
-	}
-
+@media (max-width: 950px) {
 	.firstBlock {
 		position: initial;
-		margin-top: 27px;
-		width: clamp(312px, 70vw, 515px);
-		height: clamp(247px, 55vw, 442px);
+		margin-top: 50px;
 	}
 
 	.homeContainer {
@@ -221,6 +213,39 @@ h1.title {
 	.textContainer {
 		margin: 0 auto;
 		margin-top: 18px;
+		gap: 44px;
+	}
+
+	.button {
+		margin: 0 auto;
+	}
+
+	.secondBeans,
+	.thirdBeans {
+		display: block;
+		width: 200px;
+		height: 200px;
+	}
+
+	.secondBeans {
+		top: 250px;
+	}
+}
+
+@media (max-width: 768px) {
+	h1.title {
+		font-size: clamp(37px, 10vw, 80px);
+		line-height: clamp(37px, 10vw, 80px);
+		max-width: min-content;
+	}
+
+	.firstBlock {
+		margin-top: 27px;
+		width: clamp(312px, 70vw, 515px);
+		height: clamp(247px, 55vw, 442px);
+	}
+
+	.textContainer {
 		gap: clamp(21px, 5vw, 44px);
 	}
 
@@ -257,6 +282,10 @@ h1.title {
 		display: block;
 		right: -17px;
 		top: 147px;
+	}
+
+	.thirdBeans {
+		display: none;
 	}
 }
 
