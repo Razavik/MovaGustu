@@ -1,6 +1,8 @@
 .gamePage {
 	position: relative;
 	padding-bottom: 40px;
+	max-width: 1920px;
+	margin: 0 auto;
 }
 
 .firstBeans {
@@ -42,5 +44,47 @@
 	}
 	100% {
 		transform: translate(0, 0) rotate(0deg);
+	}
+}
+
+@media screen and (max-width: 1270px) {
+	.secondBeans {
+		display: none;
+	}
+
+	.firstBeans {
+		top: 400px;
+		width: 212px;
+	}
+}
+
+@media screen and (max-width: 850px) {
+	.secondBeans {
+		display: none;
+	}
+
+	.firstBeans {
+		top: 326px;
+		width: 100px;
+		height: 100px;
+		left: 0;
+	}
+
+	.secondBeans {
+		display: block;
+		width: 100px;
+		height: 100px;
+		right: 20px;
+		top: 147px;
+	}
+}
+
+@media screen and (max-width: 555px) {
+	.secondBeans {
+		display: block;
+		width: 100px;
+		height: 100px;
+		right: 20px;
+		top: 250px;
 	}
 }

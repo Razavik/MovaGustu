@@ -9,6 +9,21 @@
 	z-index: 1;
 }
 
+.promo {
+	flex: 1 1 auto;
+}
+
+.subTitle img {
+	width: 140px;
+	object-fit: contain;
+}
+
+.prog {
+	width: 112px;
+	object-fit: contain;
+	aspect-ratio: 112 / 54;
+}
+
 .endLevel h2 {
 	max-width: 1345px;
 	text-align: center;
@@ -135,3 +150,139 @@
 /* .nextLevel:hover span {
 	font-weight: 600;
 } */
+
+@media screen and (max-width: 1400px) {
+	.promoCard {
+		height: auto;
+		max-height: 400px;
+		min-height: 400px;
+	}
+	.promos {
+		gap: 24px;
+		padding-inline: 20px;
+	}
+	.promoCardCoffee {
+		max-width: 565px;
+	}
+
+	.promoCardShop {
+		max-width: 565px;
+	}
+}
+
+@media screen and (max-width: 1100px) {
+	.subTitle {
+		font-size: 26px;
+	}
+
+	.promo {
+		font-size: 19px;
+	}
+
+	.info p {
+		font-size: 8px;
+	}
+
+	.infoShop {
+		font-size: 15px;
+	}
+}
+
+@media screen and (max-width: 910px) {
+	.promoCardCoffee .subTitle img {
+		width: 80px;
+	}
+	.promos {
+		flex-direction: column;
+	}
+
+	.promoCardShop {
+		gap: 16px;
+	}
+
+	.promoCardCoffee img {
+		width: 250px;
+	}
+
+	.info img {
+		width: 50px;
+	}
+
+	.info p {
+		font-size: 15px;
+	}
+
+	.promos {
+		margin-inline: 40px;
+	}
+
+	.promoCard,
+	.promoCardCoffee{
+		height: auto;
+		min-height: 0;
+		max-height: initial;
+	}
+
+	.nextLevel {
+		width: 350px;
+		margin-top: 30px;
+	}
+
+	.nextLevel span {
+		font-size: 25px;
+	}
+
+	.endLevel {
+		padding-inline: 20px;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.promoCardCoffee .subTitle img {
+		width: 60px;
+	}
+}
+
+@media screen and (max-width: 550px) {
+	.info p {
+		font-size: 8px;
+	}
+
+	.infoShop {
+		font-size: 8px;
+	}
+
+	.promoCard {
+		padding: 20px;
+	}
+
+	.promoCardShop img {
+		width: 60px;
+		height: 35px;
+		object-fit: contain;
+	}
+
+	.subTitle h3 {
+		font-size: 20px;
+		line-height: 25px;
+	}
+
+	.subTitle img {
+		width: 60px;
+		height: 35px;
+		object-fit: contain;
+	}
+
+	.info img {
+		width: 50px;
+	}
+
+	.nextLevel {
+		width: 300px;
+		margin-top: 30px;
+	}
+
+	.nextLevel span {
+		font-size: 20px;
+	}
+}

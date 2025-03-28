@@ -1,8 +1,8 @@
 import {FC, ReactNode, useState} from "react";
 import styles from "./endLevel.module.css";
-import logo from "@assets/img/logos/logo-promo.png";
-import logoShop from "@assets/img/logos/logo-shop-promo.png";
-import prog from "@assets/img/program.png";
+import logo from "@assets/img/logo.png";
+import logoShop from "@assets/img/logo-roast.png";
+import prog from "@assets/img/брелок.png";
 import {useMutationState} from "@tanstack/react-query";
 import {CuponsData} from "../../../../hooks/useGetCupons.ts";
 import {useGetContent} from "../../../../hooks/useGetContent.ts";
@@ -112,7 +112,7 @@ const EndLevel: FC<EndLevelProps> = ({ stage, setStage, setWin }) => {
 						<p dangerouslySetInnerHTML={{ __html: footerTextA100[stage - 1] ?? "" }}>
 						</p>
 						<div className={styles.dividerInfo}></div>
-						<img src={prog} alt="program" />
+						<img className={styles.prog} src={prog} alt="program" />
 					</div>
 				</div>
 				<div className={`${styles.promoCardShop} ${styles.promoCard}`}>

@@ -2,24 +2,35 @@
 	background-color: white;
 }
 
+.container {
+	padding: 35px 48px 35px 0px;
+}
+
 .header > div {
 	display: flex;
 	justify-content: space-between;
 }
 
 .left {
+	padding-left: 75px;
+	gap: 75px;
 	display: flex;
 	align-items: center;
 }
 
 .logo {
-	width: clamp(154px, 30vw, 320px);
-	height: clamp(77px, 15vw, 160px);
+	width: 200px;
+}
+
+@media screen and (max-width: 893px) {
+	.logo {
+		width: 150px;
+	}
 }
 
 .logoShop {
-	width: clamp(127px, 25vw, 283px);
-	height: clamp(77px, 15vw, 160px);
+	width: 192px;
+	object-fit: contain;
 }
 
 .left p {
@@ -27,9 +38,29 @@
 	font-size: clamp(16px, 3vw, 32px);
 }
 
+.left button {
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+}
+
 @media (max-width: 768px) {
 	.logoShop {
 		display: none;
+	}
+
+	.container {
+		padding: 0;
+	}
+
+	.header {
+		padding: 20px 0;
+	}
+
+	.left {
+		padding-left: 40px;
+		display: flex;
+		align-items: center;
 	}
 
 	.left {

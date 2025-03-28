@@ -1,9 +1,10 @@
-import {useState} from "react";
 import GamePage from "@components/pages/GamePage/GamePage.tsx";
 import Home from "@components/pages/Home/Home.tsx";
+import {useOutletContext} from "react-router-dom";
 
 export default function MainPage() {
-    const [isGame, setIsGame] = useState(false);
+    const {isGame, setIsGame} = useOutletContext<any>();
+
 
     return (
         <>

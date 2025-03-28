@@ -1,19 +1,19 @@
-import logo from "@assets/img/logos/logo.png";
-import logoShop from "@assets/img/logos/logo-shop.png";
+import logo from "@assets/img/logo-2.png";
+import logoShop from "@assets/img/logo-roast.png";
 import styles from "./Header.module.css";
-import { useGetContent } from "../../hooks/useGetContent.ts";
+// import { useGetContent } from "../../hooks/useGetContent.ts";
 
-const Header = () => {
-	const { data: content } = useGetContent();
+const Header = ({ setIsGame }: any) => {
+	// const { data: content } = useGetContent();
 
 	return (
 		<header className={styles.header}>
-			<div className="container">
+			<div className={`${styles.container} container`}>
 				<div className={styles.left}>
-					<a href="https://azs.a-100.by">
+					<button className={styles.button} onClick={() => setIsGame(false)}>
 						<img src={logo} alt="logo" className={styles.logo} />
-					</a>
-					<p dangerouslySetInnerHTML={{ __html: content?.headTitle ?? "" }}></p>
+					</button>
+					{/*<p dangerouslySetInnerHTML={{ __html: content?.headTitle ?? "" }}></p>*/}
 				</div>
 				<img src={logoShop} alt="logo-shop" className={styles.logoShop} />
 			</div>
